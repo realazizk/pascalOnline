@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% for paste in pastes %}
+    <div class="well">
+  	 <div class = 'well well-sm'>
+			<img src="{{ paste.gravatar_url() }}" alt="avatar" class='view_image' width='80px' height='80px' />
+			{% if paste.author %} 
+				&nbsp;Auteur : {{paste.author}} |
+			{% else %} 
+				&nbsp;Auteur : Invité |
+			{% endif %} 
+
+			{% if paste.title %}
+			    &nbsp;Titre : {{paste.title}}
+			{% else %}
+			    &nbsp;Titre : NONAME
+			{% endif %}
+		</div>
+
+	<div class="well well-sm">
+		<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold"></span> <span style="background-color: #fff0f0">{{ paste.code}}</span>
+</pre></div>
+
+	</div>
+   </div>
+  {% endfor %}
+{% endblock %}

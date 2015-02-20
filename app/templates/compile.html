@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="jumbotron">
+		<div id="window">
+ 	<div id="toolbar">
+		<div class="top">
+			<div id="lights">
+				<div class="light red">
+					<div class="glyph">×</div>
+					<div class="shine"></div>
+					<div class="glow"></div>
+				</div>				
+				<div class="light yellow">
+					<div class="glyph">-</div>
+					<div class="shine"></div>
+					<div class="glow"></div>
+				</div>
+				<div class="light green">
+					<div class="glyph">+</div>
+					<div class="shine"></div>
+					<div class="glow"></div>
+				</div>
+			</div>
+			<div id="title">
+				<div class="folder">
+					<div class="tab"></div>
+					<div class="body"></div>
+				</div>
+				pascalOnline v1.0
+			</div>
+			<div id="bubble">
+				<div class="shine"></div>
+				<div class="glow"></div>
+			</div>
+		</div>
+	</div>
+	<div id="body">
+				{% for t in out %}
+		<p> {{ t }}<br />
+			{% endfor %}
+		</p>	
+	</div>	
+</div>
+<div class="span7 text-center">
+  <a href="/" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-arrow-left"></span> Retourner</a>
+</div>
+</div>
+
+
+{% endblock %}

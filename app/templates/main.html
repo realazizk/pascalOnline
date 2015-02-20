@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>pascalOnline v1.0</title>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+    $("#myTab a").click(function(e){
+      e.preventDefault();
+      $(this).tab('show');
+    });
+});
+</script>
+<style type="text/css" media="screen">
+      body { padding-top: 70px; } 
+      html {
+        position: relative;
+        min-height: 100%;
+        }
+      body {
+        /* Margin bottom by footer height */
+        margin-bottom: 60px;
+        }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        /* Set the fixed height of the footer here */
+        height: 60px;
+        background-color: #f5f5f5;
+      }
+    #editor { 
+        height: 300px;
+    }
+
+    #inp { 
+        height: 300px;
+    }
+</style>
+</head>
+<body>
+          <nav class="navbar navbar-default navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">pascalOnline</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Acceuil</a></li>
+                <li><a href="/community/1">Communauté</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="/about">À propos</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Editeur en ligne</h3>
+            </div>
+              <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#sectionA">Code</a></li>
+                <li><a data-toggle="tab" href="#sectionB">Données</a></li>
+              </ul>
+          <div class="panel-body">
+            <div class="tab-content">
+              <div id="sectionA" class="tab-pane active">
+                <form class="form-inline" role="form" action="/paste" method="Post">
+                  <div class="form-group">
+                    <label for="author">Auteur:</label>
+                    <input type="text" class="form-control" id="author" name="author">
+                  </div>
+                    <div class="form-group">
+                      <label for="titleofcode">titre:</label>
+                      <input type="text" class="form-control" id="titleofcode" name="titleofcode">
+                    </div>
+                </br></br>
+                <div id="editor"></div>
+                </br>
+                <div class="form-group">
+                  <input  type="hidden" name="komutdosyasi" id="komutdosyasi" style="display: none;">
+                  <button type="submit" class="btn btn-info">Partager!</button>
+                </div>
+              </form>
+               </div>
+               <div id="sectionB" class="tab-pane">
+                   <div id="inp"></div>
+                </div>
+            </div>
+       
+            </div>
+          </div>
+        </div>
+      </div>
+      <form class="form-horizontal" role="form" action="/save" method="Post">
+      <div class="form-group">
+        <input type="hidden" name="komutdosyasi" id="komutdosyasi" style="display: none;">
+        <input type="hidden" name="inpt" id="inpt" id="komutdosyasi" style="display: none;" >
+      </div>
+      <div class="form-group">
+          <div class="span7 text-center">
+            <button type="submit" class="btn btn-primary">Compiler</button>
+            <a class="btn btn-default" href="/run">Executer</a>
+          </div>
+      </div>
+  </form>
+
+
+            <footer class="footer">
+        <div class="container">
+            <p>Développé par Mohamed Aziz Knani &#169; 2015<p>
+      </div>
+    </footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.8/ace.js"></script>
+<script>
+     /* function to get cookie */
+    function gcookie(name) {
+        if(document.cookie.length>0) {
+            start=document.cookie.indexOf(name+"=");
+            pos = start+name.length+1;
+            if(start!=0)
+            {
+                start=document.cookie.indexOf("; "+name+"=");
+                pos = start+name.length+3;
+            }
+            if(start!=-1)
+            { 
+                start=pos;
+                end=document.cookie.indexOf(";",start);
+                if(end==-1)
+                {
+                    end=document.cookie.length;
+                }
+                return unescape(document.cookie.substring(start,end));
+            } 
+        }
+        return '';
+    }
+
+    /**function utf8_to_b64( str ) {
+      return window.btoa(unescape(encodeURIComponent( str )));
+    }
+
+    function b64_to_utf8( str ) {
+      return decodeURIComponent(escape(window.atob( str )));
+    }**/
+
+    /**
+*  Base64 encode / decode
+*  http://www.webtoolkit.info/
+*
+**/
+var Base64 = {
+    // private property
+    _keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+    // public method for encoding
+    encode : function (input) {
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
+        input = Base64._utf8_encode(input);
+        while (i < input.length) {
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+            output = output +
+            this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+            this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+        }
+        return output;
+    },
+    // public method for decoding
+    decode : function (input) {
+        var output = "";
+        var chr1, chr2, chr3;
+        var enc1, enc2, enc3, enc4;
+        var i = 0;
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+        while (i < input.length) {
+            enc1 = this._keyStr.indexOf(input.charAt(i++));
+            enc2 = this._keyStr.indexOf(input.charAt(i++));
+            enc3 = this._keyStr.indexOf(input.charAt(i++));
+            enc4 = this._keyStr.indexOf(input.charAt(i++));
+            chr1 = (enc1 << 2) | (enc2 >> 4);
+            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            chr3 = ((enc3 & 3) << 6) | enc4;
+            output = output + String.fromCharCode(chr1);
+            if (enc3 != 64) {
+                output = output + String.fromCharCode(chr2);
+            }
+            if (enc4 != 64) {
+                output = output + String.fromCharCode(chr3);
+            }
+        }
+        output = Base64._utf8_decode(output);
+        return output;
+    },
+    // private method for UTF-8 encoding
+    _utf8_encode : function (string) {
+        string = string.replace(/\r\n/g,"\n");
+        var utftext = "";
+        for (var n = 0; n < string.length; n++) {
+            var c = string.charCodeAt(n);
+            if (c < 128) {
+                utftext += String.fromCharCode(c);
+            }
+            else if((c > 127) && (c < 2048)) {
+                utftext += String.fromCharCode((c >> 6) | 192);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+            else {
+                utftext += String.fromCharCode((c >> 12) | 224);
+                utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                utftext += String.fromCharCode((c & 63) | 128);
+            }
+        }
+        return utftext;
+    },
+    // private method for UTF-8 decoding
+    _utf8_decode : function (utftext) {
+        var string = "";
+        var i = 0;
+        var c = c1 = c2 = 0;
+        while ( i < utftext.length ) {
+            c = utftext.charCodeAt(i);
+            if (c < 128) {
+                string += String.fromCharCode(c);
+                i++;
+            }
+            else if((c > 191) && (c < 224)) {
+                c2 = utftext.charCodeAt(i+1);
+                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                i += 2;
+            }
+            else {
+                c2 = utftext.charCodeAt(i+1);
+                c3 = utftext.charCodeAt(i+2);
+                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                i += 3;
+            }
+        }
+        return string;
+    }
+}
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/dreamweaver");
+    editor.getSession().setMode("ace/mode/pascal");
+
+    var input = $('input[name="komutdosyasi"]');
+    input.val(editor.getSession().getValue())
+      editor.getSession().on("change", function () {
+      input.val(editor.getSession().getValue());
+    });
+
+    editor.getSession().setValue(Base64.decode(gcookie('pgm')));
+
+    var inp = ace.edit("inp");
+    inp.setTheme("ace/theme/dreamweaver");
+    inp.getSession().setMode("ace/mode/text");
+
+    var input1 = $('input[name="inpt"]');
+    input1.val(inp.getSession().getValue())
+      inp.getSession().on("change", function () {
+      input1.val(inp.getSession().getValue());
+    });
+    
+    inp.getSession().setValue(Base64.decode(gcookie('inp')));
+
+</script>
+</body>
+</html>
