@@ -85,13 +85,19 @@ def save() :
 
 @app.route('/run')
 def run() :
-	# TODO : enter input
+
+        from subprocess import Popen, PIPE, STDOUT
 	if  'file' in request.cookies :
 		filename = request.cookies['file']
 	else :
 		return redirect('/')
+        if 'inp' in request.cookies:
+                inp = b64decode(request.cookies['inp'])
+        else:
+                inp = ''
 	# I use commands for now (This works only on *NIX)
-	out = commands.getstatusoutput(path.join('tmp/', './%s' % filename))[1]
+	p = Popen([path.join('tmp/', filename)], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+        out= p.communicate(input=inp)[0]
 	return render_template('compile.html', out=out.splitlines())
 
 engine = create_engine('sqlite:///pascalOnline.db',echo=True)
