@@ -64,7 +64,7 @@ def save() :
 	
 	# Save file (I think it's secure enough)
 	with open(path.join('tmp', filename+'.pas'), 'w+') as myfile :
-		myfile.write(request.form['komutdosyasi'])
+		myfile.write(request.form['komutdosyasi'].encode('utf-8'))
 		myfile.close()
 
 	# Check if input box got values (not only spaces)
@@ -78,7 +78,7 @@ def save() :
 
 	response = make_response(redirect(url_for('compile', filename=filename)))
 	response.set_cookie('file', filename)
-	response.set_cookie('pgm', b64encode(request.form['komutdosyasi']))
+	response.set_cookie('pgm', b64encode(request.form['komutdosyasi'].encode('utf-8')))
 	if boo :
 		response.set_cookie('inp', b64encode(request.form['inpt']))
 	return response
